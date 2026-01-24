@@ -16,11 +16,11 @@ export class CompanyService {
   }
 
   findAll() {
-    return this.companyModel.find();
+    return this.companyModel.find({}, { createAt: 1 }).lean();
   }
 
   findOne(id: string) {
-    return this.companyModel.findById(id);
+    return this.companyModel.findById(id).lean();
   }
 
   update(id: string, updateCompanyDto: UpdateCompanyDto) {

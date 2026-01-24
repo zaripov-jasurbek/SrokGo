@@ -37,7 +37,7 @@ export class Package {
   rating: number;
 
   @Prop({ type: Types.ObjectId, ref: Company.name })
-  company: Company;
+  company: Types.ObjectId;
 }
 
 export const PackageSchema = SchemaFactory.createForClass(Package);

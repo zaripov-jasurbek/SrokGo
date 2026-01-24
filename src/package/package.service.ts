@@ -16,13 +16,15 @@ export class PackageService {
   }
 
   findAll(companyId: string) {
-    return this.packageModel.find({
-      'company._id': new Types.ObjectId(companyId),
-    });
+    return this.packageModel
+      .find({
+        'company._id': new Types.ObjectId(companyId),
+      })
+      .lean();
   }
 
   findOne(id: string) {
-    return this.packageModel.findById(new Types.ObjectId(id));
+    return this.packageModel.findById(new Types.ObjectId(id)).lean();
   }
 
   update(id: string, updatePackageDto: UpdatePackageDto) {
