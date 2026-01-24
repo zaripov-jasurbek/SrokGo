@@ -29,6 +29,9 @@ export class Company {
 
   @Prop()
   coordination: [number, number];
+
+  @Prop()
+  passwordHash: string;
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

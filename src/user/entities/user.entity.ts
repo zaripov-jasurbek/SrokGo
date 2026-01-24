@@ -32,6 +32,9 @@ export class User {
 
   @Prop({ type: [Types.ObjectId], ref: OrderHistory.name })
   orderHistory: Types.ObjectId[];
+
+  @Prop()
+  passwordHash: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
