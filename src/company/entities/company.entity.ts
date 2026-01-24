@@ -26,6 +26,9 @@ export class Company {
 
   @Prop()
   rating: number;
+
+  @Prop()
+  coordination: [number, number];
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

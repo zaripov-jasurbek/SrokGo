@@ -10,14 +10,20 @@ import {
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { FindCompanyDto } from './dto/company.dto';
 
 @Controller('company')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
   @Post()
-  create(@Body() createCompanyDto: CreateCompanyDto) {
-    return this.companyService.create(createCompanyDto);
+  create(@Body() body: CreateCompanyDto) {
+    return this.companyService.create(body);
+  }
+
+  @Post()
+  find(@Body() body: FindCompanyDto) {
+    return this.companyService.find(body);
   }
 
   @Get()
@@ -31,8 +37,8 @@ export class CompanyController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    return this.companyService.update(id, updateCompanyDto);
+  update(@Param('id') id: string, @Body() body: UpdateCompanyDto) {
+    return this.companyService.update(id, body);
   }
 
   @Delete(':id')

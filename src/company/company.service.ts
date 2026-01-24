@@ -3,7 +3,8 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Company } from './entities/company.entity';
-import { Model, Types } from 'mongoose';
+import { Model, QueryFilter, Types } from 'mongoose';
+import { FindCompanyDto } from './dto/company.dto';
 
 @Injectable()
 export class CompanyService {
@@ -13,6 +14,28 @@ export class CompanyService {
 
   create(createCompanyDto: CreateCompanyDto) {
     return this.companyModel.create(createCompanyDto);
+  }
+
+  find(body: FindCompanyDto) {
+    const query: QueryFilter<Company> = {};
+
+    if (body.byCategory) {
+      query.category = body.byCategory;
+    }
+
+    if (body.byRange) {
+      query.coordination = {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: body.byRange.current,
+          },
+          $maxDistance: body.byRange.maxDistance,
+        },
+      };
+    }
+
+    return this.companyModel.find(query).lean();
   }
 
   findAll() {
