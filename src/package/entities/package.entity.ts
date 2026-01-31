@@ -16,6 +16,9 @@ export class Package {
   name: string;
 
   @Prop()
+  photo: string;
+
+  @Prop()
   description: string;
 
   @Prop()
@@ -29,6 +32,9 @@ export class Package {
 
   @Prop()
   getTime: number;
+
+  @Prop()
+  closeTime: number;
 
   @Prop()
   active: boolean;

@@ -13,6 +13,9 @@ export class Company {
   name: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
   photo: string;
 
   @Prop()
@@ -32,6 +35,9 @@ export class Company {
 
   @Prop()
   passwordHash: string;
+
+  @Prop()
+  region: string;
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

@@ -16,17 +16,17 @@ import { FindCompanyDto } from './dto/company.dto';
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() body: CreateCompanyDto) {
     return this.companyService.create(body);
   }
 
-  @Post()
+  @Post('/find')
   find(@Body() body: FindCompanyDto) {
     return this.companyService.find(body);
   }
 
-  @Get()
+  @Get('/all')
   findAll() {
     return this.companyService.findAll();
   }

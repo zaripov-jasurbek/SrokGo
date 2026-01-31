@@ -4,4 +4,5 @@ export class FindCompanyDto {
     maxDistance: number;
   };
   byCategory?: string;
+  region?: string;
 }

@@ -18,23 +18,25 @@ export class PackageService {
   findAll(companyId: string) {
     return this.packageModel
       .find({
-        'company._id': new Types.ObjectId(companyId),
+        'company._id': Types.ObjectId.createFromHexString(companyId),
       })
       .lean();
   }
 
   findOne(id: string) {
-    return this.packageModel.findById(new Types.ObjectId(id)).lean();
+    return this.packageModel
+      .findById(Types.ObjectId.createFromHexString(id))
+      .lean();
   }
 
   update(id: string, updatePackageDto: UpdatePackageDto) {
     return this.packageModel.updateOne(
-      new Types.ObjectId(id),
+      Types.ObjectId.createFromHexString(id),
       updatePackageDto,
     );
   }
 
   remove(id: string) {
-    return this.packageModel.deleteOne(new Types.ObjectId(id));
+    return this.packageModel.deleteOne(Types.ObjectId.createFromHexString(id));
   }
 }

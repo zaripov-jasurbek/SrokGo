@@ -23,6 +23,10 @@ export class CompanyService {
       query.category = body.byCategory;
     }
 
+    if (body.region) {
+      query.region = body.region;
+    }
+
     if (body.byRange) {
       query.coordination = {
         $near: {
@@ -48,12 +52,12 @@ export class CompanyService {
 
   update(id: string, updateCompanyDto: UpdateCompanyDto) {
     return this.companyModel.updateOne(
-      new Types.ObjectId(id),
+      Types.ObjectId.createFromHexString(id),
       updateCompanyDto,
     );
   }
 
   remove(id: string) {
-    return this.companyModel.deleteOne(new Types.ObjectId(id));
+    return this.companyModel.deleteOne(Types.ObjectId.createFromHexString(id));
   }
 }

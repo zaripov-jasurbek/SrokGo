@@ -7,6 +7,7 @@ import { CompanyModule } from './company/company.module';
 import { UserModule } from './user/user.module';
 import { BusinessAuthModule } from './auth/business/business-auth.module';
 import { UserAuthModule } from './auth/user/user-auth.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserAuthModule } from './auth/user/user-auth.module';
     UserModule,
     BusinessAuthModule,
     UserAuthModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
