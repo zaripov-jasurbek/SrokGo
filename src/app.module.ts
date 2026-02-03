@@ -12,7 +12,7 @@ import { OrderModule } from './order/order.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb://root:root@localhost:27017/?authSource=admin',
+      'mongodb://root:root@localhost:27017/srok_go?authSource=admin',
     ),
     PackageModule,
     CompanyModule,
