@@ -15,4 +15,4 @@ export class LoginDto {
   password: string;
 }
 
-export class UpdateMe extends PartialType<RegisterDto> {}
+export class UpdateMe extends PartialType(RegisterDto) {}

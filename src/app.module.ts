@@ -11,7 +11,9 @@ import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot(
+      'mongodb://root:root@localhost:27017/?authSource=admin',
+    ),
     PackageModule,
     CompanyModule,
     UserModule,
