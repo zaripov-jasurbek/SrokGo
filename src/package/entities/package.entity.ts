@@ -12,34 +12,34 @@ export class Package {
 
   updateAt: Date;
 
-  @Prop()
+  @Prop({ type: String })
   name: string;
 
-  @Prop()
+  @Prop({ type: String })
   photo: string;
 
-  @Prop()
+  @Prop({ type: String })
   description: string;
 
-  @Prop()
+  @Prop({ type: String })
   category: string;
 
-  @Prop()
+  @Prop({ type: Number })
   count: number;
 
-  @Prop()
+  @Prop({ type: Number })
   price: number;
 
-  @Prop()
+  @Prop({ type: Number })
   getTime: number;
 
-  @Prop()
+  @Prop({ type: Number })
   closeTime: number;
 
-  @Prop()
+  @Prop({ type: Boolean })
   active: boolean;
 
-  @Prop()
+  @Prop({ type: Number })
   rating: number;
 
   @Prop({ type: Types.ObjectId, ref: Company.name })

@@ -1,43 +1,49 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CreateCommentDto, ReactionDto } from './dto/create-comment.dto';
+import { CreateCommentDto, ReactionDto, UpdateCommentTextDto, } from './dto/create-comment.dto';
 
-@Controller('comment')
+@Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Post('/add')
-  create(@Body() body: CreateCommentDto) {
-    return this.commentService.create(body);
+  /* ================= COMMENTS ================= */
+
+  @Post()
+  create(@Body() dto: CreateCommentDto) {
+    return this.commentService.create(dto);
   }
 
-  @Post('/:id')
-  edit(@Param('id') id: string, @Body('text') text: string) {
-    return this.commentService.editText(id, text);
+  @Patch(':id/text')
+  updateText(@Param('id') id: string, @Body() dto: UpdateCommentTextDto) {
+    return this.commentService.editText(id, dto.text);
   }
 
-  @Post('/reaction/:id')
-  reaction(@Param('id') id: string, @Body() body: ReactionDto) {
-    return this.commentService.reaction(id, body);
-  }
-
-  @Delete('/:id')
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.commentService.remove(id);
   }
 
-  @Get('by-package/:id')
-  getByPackage(@Param('id') id: string) {
-    return this.commentService.getByPackage(id);
+  /* ================= REACTIONS ================= */
+
+  @Post(':id/reaction')
+  react(@Param('id') commentId: string, @Body() dto: ReactionDto) {
+    return this.commentService.reaction(commentId, dto);
   }
 
-  @Get('by-company/:id')
-  getByCompany(@Param('id') id: string) {
-    return this.commentService.getByCompany(id);
+  /* ================= QUERIES ================= */
+
+  @Get('package/:id')
+  getByPackage(@Param('id') packageId: string) {
+    return this.commentService.getByPackage(packageId);
   }
 
-  @Get('child/:id')
-  getChild(@Param('id') parentId: string) {
+  @Get('company/:id')
+  getByCompany(@Param('id') companyId: string) {
+    return this.commentService.getByCompany(companyId);
+  }
+
+  @Get(':id/children')
+  getChildren(@Param('id') parentId: string) {
     return this.commentService.getChild(parentId);
   }
 }

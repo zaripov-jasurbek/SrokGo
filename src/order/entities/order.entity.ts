@@ -30,19 +30,19 @@ export class Order {
   @Prop({ type: Types.ObjectId, ref: User.name })
   user: Types.ObjectId;
 
-  @Prop()
+  @Prop({ type: String })
   description: string;
 
-  @Prop()
+  @Prop({ type: Number })
   count: number;
 
-  @Prop()
+  @Prop({ type: [Number] })
   coordination: [number, number];
 
-  @Prop({ default: OrderStatus.Pending })
+  @Prop({ type: String, default: OrderStatus.Pending })
   status: string;
 
-  @Prop()
+  @Prop({ type: Number })
   price: number;
 }
 

@@ -12,28 +12,28 @@ export class User {
 
   updateAt: Date;
 
-  @Prop()
+  @Prop({ type: String })
   name: string;
 
-  @Prop()
+  @Prop({ type: String })
   about?: string;
 
-  @Prop()
+  @Prop({ type: String })
   avatar?: string;
 
-  @Prop()
+  @Prop({ type: String })
   email?: string;
 
-  @Prop()
+  @Prop({ type: String })
   phone?: string;
 
-  @Prop({ default: 10 })
+  @Prop({ type: Number, default: 10 })
   rating: number;
 
   @Prop({ type: [Types.ObjectId], ref: OrderHistory.name })
   orderHistory: Types.ObjectId[];
 
-  @Prop()
+  @Prop({ type: String })
   passwordHash: string;
 }
 

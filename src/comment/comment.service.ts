@@ -1,70 +1,130 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCommentDto, ReactionDto } from './dto/create-comment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Comment } from './entities/comment.entity';
+import { Comment, CommentReaction } from './entities/comment.entity';
+import { CreateCommentDto, ReactionDto } from './dto/create-comment.dto';
 import { toObjectId } from '../common/common.service';
 
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
+    @InjectModel(Comment.name)
+    private readonly commentModel: Model<Comment>,
+
+    @InjectModel(CommentReaction.name)
+    private readonly reactionModel: Model<CommentReaction>,
   ) {}
 
-  create(body: CreateCommentDto) {
-    return this.commentModel.create(body);
+  /* ================= COMMENTS ================= */
+
+  async create(dto: CreateCommentDto) {
+    return this.commentModel.create(dto);
   }
 
-  editText(id: string, text: string) {
-    return this.commentModel.updateOne({ _id: toObjectId(id) }, { text });
-  }
-
-  async reaction(commentId: string, dto: ReactionDto) {
-    const userId = dto.user;
-    const path = `reactions.${userId}`;
-
-    const comment = await this.commentModel.findById(commentId);
-    if (!comment) {
-      throw new NotFoundException(`Comment with id ${commentId} not found`);
-    }
-
-    const currentReaction = comment.reactions?.get(userId);
-
-    if (currentReaction === dto.type) {
-      // toggle off
-      await this.commentModel.updateOne(
-        { _id: commentId },
-        { $unset: { [path]: '' } },
-      );
-
-      comment.reactions?.delete(userId);
-      return comment.reactions;
-    }
-
-    // add or replace
-    await this.commentModel.updateOne(
-      { _id: commentId },
-      { $set: { [path]: dto.type } },
+  async editText(id: string, text: string) {
+    const res = await this.commentModel.updateOne(
+      { _id: toObjectId(id) },
+      { $set: { text } },
     );
 
-    comment.reactions.set(userId, dto.type);
-    return comment.reactions;
+    if (!res.matchedCount) {
+      throw new NotFoundException('Comment not found');
+    }
   }
-  remove(id: string) {
-    return this.commentModel.deleteOne({
-      _id: toObjectId(id),
+
+  async remove(id: string) {
+    const _id = toObjectId(id);
+
+    await this.reactionModel.deleteMany({ commentId: _id });
+    await this.commentModel.deleteOne({ _id });
+  }
+
+  /* ================= REACTIONS ================= */
+
+  async reaction(commentId: string, dto: ReactionDto) {
+    const commentObjectId = toObjectId(commentId);
+    const userId = toObjectId(dto.user);
+
+    const commentExists = await this.commentModel.exists({
+      _id: commentObjectId,
     });
+
+    if (!commentExists) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    const existing = await this.reactionModel.findOne({
+      commentId: commentObjectId,
+      userId,
+    });
+
+    // toggle off
+    if (existing && existing.reaction === dto.type) {
+      await this.reactionModel.deleteOne({ _id: existing._id });
+
+      await this.commentModel.updateOne(
+        { _id: commentObjectId },
+        {
+          $inc:
+            dto.type === 'like' ? { likesCount: -1 } : { dislikesCount: -1 },
+        },
+      );
+
+      return;
+    }
+
+    // replace reaction
+    if (existing) {
+      await this.reactionModel.updateOne(
+        { _id: existing._id },
+        { reaction: dto.type },
+      );
+
+      await this.commentModel.updateOne(
+        { _id: commentObjectId },
+        {
+          $inc:
+            dto.type === 'like'
+              ? { likesCount: 1, dislikesCount: -1 }
+              : { likesCount: -1, dislikesCount: 1 },
+        },
+      );
+
+      return;
+    }
+
+    // new reaction
+    await this.reactionModel.create({
+      commentId: commentObjectId,
+      userId,
+      reaction: dto.type,
+    });
+
+    await this.commentModel.updateOne(
+      { _id: commentObjectId },
+      {
+        $inc: dto.type === 'like' ? { likesCount: 1 } : { dislikesCount: 1 },
+      },
+    );
   }
+
+  /* ================= QUERIES ================= */
 
   getByPackage(packageId: string) {
-    return this.commentModel.find({ package: toObjectId(packageId) });
+    return this.commentModel
+      .find({ package: toObjectId(packageId), parentId: null })
+      .sort({ createdAt: -1 });
   }
 
-  getByCompany(company: string) {
-    return this.commentModel.find({ company: toObjectId(company) });
+  getByCompany(companyId: string) {
+    return this.commentModel
+      .find({ company: toObjectId(companyId), parentId: null })
+      .sort({ createdAt: -1 });
   }
 
   getChild(parentId: string) {
-    return this.commentModel.find({ parentId: toObjectId(parentId) });
+    return this.commentModel
+      .find({ parentId: toObjectId(parentId) })
+      .sort({ createdAt: 1 });
   }
 }

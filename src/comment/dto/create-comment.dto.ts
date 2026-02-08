@@ -5,11 +5,14 @@ export class CreateCommentDto extends OmitType(Comment, [
   '_id',
   'createAt',
   'updateAt',
-  'reactions',
 ]) {}
 
 export class ReactionDto {
   user: string;
   name: string;
   type: 'like' | 'dislike';
+}
+
+export class UpdateCommentTextDto {
+  text: string;
 }

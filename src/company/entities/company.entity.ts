@@ -9,34 +9,34 @@ export class Company {
 
   updateAt: Date;
 
-  @Prop({ unique: true })
+  @Prop({ type: String, unique: true })
   name: string;
 
-  @Prop()
+  @Prop({ type: String })
   description: string;
 
-  @Prop()
+  @Prop({ type: String })
   photo: string;
 
-  @Prop()
+  @Prop({ type: Date })
   OpenTime: Date;
 
-  @Prop()
+  @Prop({ type: Date })
   CloseTime: Date;
 
-  @Prop()
+  @Prop({ type: String })
   category: string;
 
-  @Prop()
+  @Prop({ type: Number })
   rating: number;
 
-  @Prop()
+  @Prop({ type: [Number] })
   coordination: [number, number];
 
-  @Prop()
+  @Prop({ type: String })
   passwordHash: string;
 
-  @Prop()
+  @Prop({ type: String })
   region: string;
 }
 
