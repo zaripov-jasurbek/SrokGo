@@ -29,7 +29,7 @@ export class Order {
   @Prop({ type: Types.ObjectId, ref: Company.name })
   company: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: User.name })
+  @Prop({ type: Types.ObjectId, ref: 'User' })
   user: Types.ObjectId;
 
   @Prop({ type: String })
