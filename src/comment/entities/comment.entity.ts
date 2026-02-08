@@ -7,8 +7,8 @@ import { Company } from '../../company/entities/company.entity';
 @Schema({ timestamps: true, lean: true, versionKey: false })
 export class Comment {
   _id: Types.ObjectId;
-  createAt: Date;
-  updateAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 
   @Prop({ type: Types.ObjectId, ref: User.name })
   user: Types.ObjectId;
@@ -41,9 +41,9 @@ export const CommentSchema = SchemaFactory.createForClass(Comment);
 export class CommentReaction {
   _id: Types.ObjectId;
 
-  createAt: Date;
+  createdAt: Date;
 
-  updateAt: Date;
+  updatedAt: Date;
 
   @Prop({ type: Types.ObjectId, ref: Comment.name, index: true })
   commentId: Types.ObjectId;

@@ -17,9 +17,9 @@ export enum OrderStatus {
 export class Order {
   _id: Types.ObjectId;
 
-  createAt: Date;
+  createdAt: Date;
 
-  updateAt: Date;
+  updatedAt: Date;
 
   @Prop({ type: Types.ObjectId, ref: Package.name })
   package: Types.ObjectId;

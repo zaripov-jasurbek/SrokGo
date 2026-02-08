@@ -8,9 +8,9 @@ export class OrderHistory {}
 export class User {
   _id: Types.ObjectId;
 
-  createAt: Date;
+  createdAt: Date;
 
-  updateAt: Date;
+  updatedAt: Date;
 
   @Prop({ type: String })
   name: string;

@@ -16,7 +16,7 @@ export class UserService {
   }
 
   findAll() {
-    return this.userModel.find({}, { createAt: 1 }).lean();
+    return this.userModel.find({}, { createdAt: 1 }).lean();
   }
 
   findOne(id: string) {

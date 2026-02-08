@@ -5,9 +5,9 @@ import { Types } from 'mongoose';
 export class Company {
   _id: Types.ObjectId;
 
-  createAt: Date;
+  createdAt: Date;
 
-  updateAt: Date;
+  updatedAt: Date;
 
   @Prop({ type: String, unique: true })
   name: string;

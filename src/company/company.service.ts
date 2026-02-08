@@ -44,7 +44,7 @@ export class CompanyService {
   }
 
   findAll() {
-    return this.companyModel.find({}, { createAt: 1 }).lean();
+    return this.companyModel.find({}, { createdAt: 1 }).lean();
   }
 
   findOne(id: string) {

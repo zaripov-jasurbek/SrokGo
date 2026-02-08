@@ -3,8 +3,8 @@ import { Comment } from '../entities/comment.entity';
 
 export class CreateCommentDto extends OmitType(Comment, [
   '_id',
-  'createAt',
-  'updateAt',
+  'createdAt',
+  'updatedAt',
 ]) {}
 
 export class ReactionDto {

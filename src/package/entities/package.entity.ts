@@ -1,16 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { Company } from '../../company/entities/company.entity';
-
-export type PackageDocument = HydratedDocument<Package>;
 
 @Schema({ timestamps: true, lean: true, versionKey: false })
 export class Package {
   _id: Types.ObjectId;
 
-  createAt: Date;
+  createdAt: Date;
 
-  updateAt: Date;
+  updatedAt: Date;
 
   @Prop({ type: String })
   name: string;
