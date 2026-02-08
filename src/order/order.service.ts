@@ -3,8 +3,9 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './entities/order.entity';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { OrderFilter } from './dto/order.dto';
+import { toObjectId } from '../common/common.service';
 
 @Injectable()
 export class OrderService {
@@ -28,13 +29,10 @@ export class OrderService {
   }
 
   update(id: string, updateOrderDto: UpdateOrderDto) {
-    return this.orderModel.updateOne(
-      Types.ObjectId.createFromHexString(id),
-      updateOrderDto,
-    );
+    return this.orderModel.updateOne(toObjectId(id), updateOrderDto);
   }
 
   remove(id: string) {
-    return this.orderModel.deleteOne(Types.ObjectId.createFromHexString(id));
+    return this.orderModel.deleteOne(toObjectId(id));
   }
 }

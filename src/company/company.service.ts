@@ -3,8 +3,9 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Company } from './entities/company.entity';
-import { Model, QueryFilter, Types } from 'mongoose';
+import { Model, QueryFilter } from 'mongoose';
 import { FindCompanyDto } from './dto/company.dto';
+import { toObjectId } from '../common/common.service';
 
 @Injectable()
 export class CompanyService {
@@ -51,13 +52,10 @@ export class CompanyService {
   }
 
   update(id: string, updateCompanyDto: UpdateCompanyDto) {
-    return this.companyModel.updateOne(
-      Types.ObjectId.createFromHexString(id),
-      updateCompanyDto,
-    );
+    return this.companyModel.updateOne(toObjectId(id), updateCompanyDto);
   }
 
   remove(id: string) {
-    return this.companyModel.deleteOne(Types.ObjectId.createFromHexString(id));
+    return this.companyModel.deleteOne(toObjectId(id));
   }
 }

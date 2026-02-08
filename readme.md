@@ -1,4 +1,5 @@
 # qilish kerak
+ - hamma Prop larga type quyib chiqish kerak!!!
  - auth / jwt / bycrpy
  - notification
    - GET    /notifications            # Мои уведомления

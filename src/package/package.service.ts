@@ -3,7 +3,8 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Package } from './entities/package.entity';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
+import { toObjectId } from '../common/common.service';
 
 @Injectable()
 export class PackageService {
@@ -18,25 +19,20 @@ export class PackageService {
   findAll(companyId: string) {
     return this.packageModel
       .find({
-        'company._id': Types.ObjectId.createFromHexString(companyId),
+        'company._id': toObjectId(companyId),
       })
       .lean();
   }
 
   findOne(id: string) {
-    return this.packageModel
-      .findById(Types.ObjectId.createFromHexString(id))
-      .lean();
+    return this.packageModel.findById(toObjectId(id)).lean();
   }
 
   update(id: string, updatePackageDto: UpdatePackageDto) {
-    return this.packageModel.updateOne(
-      Types.ObjectId.createFromHexString(id),
-      updatePackageDto,
-    );
+    return this.packageModel.updateOne(toObjectId(id), updatePackageDto);
   }
 
   remove(id: string) {
-    return this.packageModel.deleteOne(Types.ObjectId.createFromHexString(id));
+    return this.packageModel.deleteOne(toObjectId(id));
   }
 }
