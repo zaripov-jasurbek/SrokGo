@@ -4,7 +4,7 @@ import { Types } from 'mongoose';
 // TODO: orderga uzgartish kere
 export class OrderHistory {}
 
-@Schema({ timestamps: true, lean: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false })
 export class User {
   _id: Types.ObjectId;
 

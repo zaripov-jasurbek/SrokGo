@@ -4,7 +4,7 @@ import { User } from '../../user/entities/user.entity';
 import { Package } from '../../package/entities/package.entity';
 import { Company } from '../../company/entities/company.entity';
 
-@Schema({ timestamps: true, lean: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false })
 export class Comment {
   _id: Types.ObjectId;
   createdAt: Date;
@@ -37,7 +37,7 @@ export class Comment {
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
 
-@Schema({ timestamps: true, lean: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false })
 export class CommentReaction {
   _id: Types.ObjectId;
 

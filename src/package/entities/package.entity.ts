@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Company } from '../../company/entities/company.entity';
 
-@Schema({ timestamps: true, lean: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false })
 export class Package {
   _id: Types.ObjectId;
 

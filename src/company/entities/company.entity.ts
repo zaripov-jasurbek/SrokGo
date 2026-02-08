@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
-@Schema({ timestamps: true, lean: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false })
 export class Company {
   _id: Types.ObjectId;
 

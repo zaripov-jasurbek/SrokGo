@@ -13,7 +13,7 @@ export enum OrderStatus {
   Completed = 'completed',
 }
 
-@Schema({ timestamps: true, lean: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false })
 export class Order {
   _id: Types.ObjectId;
 
