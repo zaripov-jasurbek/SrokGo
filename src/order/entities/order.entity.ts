@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { User } from '../../user/entities/user.entity';
 import { Company } from '../../company/entities/company.entity';
 import { Package } from '../../package/entities/package.entity';
-import { User } from '../../user/entities/user.entity';
 
 export enum OrderStatus {
   Pending = 'pending',
@@ -12,6 +12,8 @@ export enum OrderStatus {
   NoShow = 'noShow',
   Completed = 'completed',
 }
+
+export type OrderDocument = HydratedDocument<Order>;
 
 @Schema({ timestamps: true, versionKey: false })
 export class Order {

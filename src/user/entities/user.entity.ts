@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { Order } from '../../order/entities/order.entity';
 
-// TODO: orderga uzgartish kere
-export class OrderHistory {}
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true, versionKey: false })
 export class User {
@@ -30,7 +30,7 @@ export class User {
   @Prop({ type: Number, default: 10 })
   rating: number;
 
-  @Prop({ type: [Types.ObjectId], ref: OrderHistory.name })
+  @Prop({ type: [Types.ObjectId], ref: Order.name })
   orderHistory: Types.ObjectId[];
 
   @Prop({ type: String })

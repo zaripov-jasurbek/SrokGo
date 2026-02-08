@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Comment, CommentReaction } from './entities/comment.entity';
+import { Comment, CommentDocument, CommentReaction, CommentReactionDocument, } from './entities/comment.entity';
 import { CreateCommentDto, ReactionDto } from './dto/create-comment.dto';
 import { toObjectId } from '../common/common.service';
 
@@ -9,10 +9,10 @@ import { toObjectId } from '../common/common.service';
 export class CommentService {
   constructor(
     @InjectModel(Comment.name)
-    private readonly commentModel: Model<Comment>,
+    private readonly commentModel: Model<CommentDocument>,
 
     @InjectModel(CommentReaction.name)
-    private readonly reactionModel: Model<CommentReaction>,
+    private readonly reactionModel: Model<CommentReactionDocument>,
   ) {}
 
   /* ================= COMMENTS ================= */
@@ -39,7 +39,7 @@ export class CommentService {
 
   async reaction(commentId: string, dto: ReactionDto) {
     const commentObjectId = toObjectId(commentId);
-    const userId = toObjectId(dto.user);
+    const userId = toObjectId(dto.userId.toString());
 
     const commentExists = await this.commentModel.exists({
       _id: commentObjectId,
@@ -55,14 +55,16 @@ export class CommentService {
     });
 
     // toggle off
-    if (existing && existing.reaction === dto.type) {
+    if (existing && existing.reaction === dto.reaction) {
       await this.reactionModel.deleteOne({ _id: existing._id });
 
       await this.commentModel.updateOne(
         { _id: commentObjectId },
         {
           $inc:
-            dto.type === 'like' ? { likesCount: -1 } : { dislikesCount: -1 },
+            dto.reaction === 'like'
+              ? { likesCount: -1 }
+              : { dislikesCount: -1 },
         },
       );
 
@@ -73,14 +75,14 @@ export class CommentService {
     if (existing) {
       await this.reactionModel.updateOne(
         { _id: existing._id },
-        { reaction: dto.type },
+        { reaction: dto.reaction },
       );
 
       await this.commentModel.updateOne(
         { _id: commentObjectId },
         {
           $inc:
-            dto.type === 'like'
+            dto.reaction === 'like'
               ? { likesCount: 1, dislikesCount: -1 }
               : { likesCount: -1, dislikesCount: 1 },
         },
@@ -93,13 +95,14 @@ export class CommentService {
     await this.reactionModel.create({
       commentId: commentObjectId,
       userId,
-      reaction: dto.type,
+      reaction: dto.reaction,
     });
 
     await this.commentModel.updateOne(
       { _id: commentObjectId },
       {
-        $inc: dto.type === 'like' ? { likesCount: 1 } : { dislikesCount: 1 },
+        $inc:
+          dto.reaction === 'like' ? { likesCount: 1 } : { dislikesCount: 1 },
       },
     );
   }

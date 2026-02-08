@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Order } from './entities/order.entity';
+import { Order, OrderDocument } from './entities/order.entity';
 import { Model } from 'mongoose';
 import { OrderFilter } from './dto/order.dto';
 import { toObjectId } from '../common/common.service';
@@ -10,7 +10,7 @@ import { toObjectId } from '../common/common.service';
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectModel(Order.name) private readonly orderModel: Model<Order>,
+    @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
   ) {}
 
   create(body: CreateOrderDto) {

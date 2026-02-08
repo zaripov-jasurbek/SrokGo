@@ -3,12 +3,12 @@ import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, QueryFilter } from 'mongoose';
 import { AuthService } from '../auth.service';
-import { User } from '../../user/entities/user.entity';
+import { User, UserDocument } from '../../user/entities/user.entity';
 
 @Injectable()
 export class UserAuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly authService: AuthService,
   ) {}
 
@@ -19,7 +19,7 @@ export class UserAuthService {
   }
 
   async login(body: LoginDto) {
-    const query: QueryFilter<User> = {};
+    const query: QueryFilter<UserDocument> = {};
 
     if (body.phone) {
       query.phone = body.phone;

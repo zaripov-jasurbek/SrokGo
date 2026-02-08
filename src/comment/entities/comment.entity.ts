@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { User } from '../../user/entities/user.entity';
 import { Package } from '../../package/entities/package.entity';
 import { Company } from '../../company/entities/company.entity';
+
+export type CommentDocument = HydratedDocument<Comment>;
 
 @Schema({ timestamps: true, versionKey: false })
 export class Comment {
@@ -36,6 +38,9 @@ export class Comment {
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
+
+///////////////// REACTION /////////////////
+export type CommentReactionDocument = HydratedDocument<CommentReaction>;
 
 @Schema({ timestamps: true, versionKey: false })
 export class CommentReaction {
