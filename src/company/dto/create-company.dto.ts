@@ -1,9 +1,9 @@
-export class CreateCompanyDto {
-  name: string;
+import { OmitType } from '@nestjs/mapped-types';
+import { Company } from '../entities/company.entity';
 
-  photo: string;
-
-  OpenTime: Date;
-
-  CloseTime: Date;
-}
+export class CreateCompanyDto extends OmitType(Company, [
+  '_id',
+  'createdAt',
+  'updatedAt',
+  'passwordHash',
+]) {}

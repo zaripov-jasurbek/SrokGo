@@ -26,10 +26,6 @@ export class CommentService {
       { _id: toObjectId(id) },
       { $set: { text } },
     );
-
-    if (!res.matchedCount) {
-      throw new NotFoundException('Comment not found');
-    }
   }
 
   async remove(id: string) {

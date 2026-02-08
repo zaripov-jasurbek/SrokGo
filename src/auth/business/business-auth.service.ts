@@ -1,14 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Company } from '../../company/entities/company.entity';
+import {
+  Company,
+  CompanyDocument,
+} from '../../company/entities/company.entity';
 import { Model } from 'mongoose';
 import { AuthService } from '../auth.service';
 
 @Injectable()
 export class BusinessAuthService {
   constructor(
-    @InjectModel(Company.name) private readonly companyModel: Model<Company>,
+    @InjectModel(Company.name)
+    private readonly companyModel: Model<CompanyDocument>,
     private readonly authService: AuthService,
   ) {}
 

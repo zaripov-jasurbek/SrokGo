@@ -5,4 +5,7 @@ export class FindCompanyDto {
   };
   byCategory?: string;
   region?: string;
+
+  skip: number;
+  limit: number;
 }

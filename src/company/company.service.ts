@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Company } from './entities/company.entity';
+import { Company, CompanyDocument } from './entities/company.entity';
 import { Model, QueryFilter } from 'mongoose';
 import { FindCompanyDto } from './dto/company.dto';
 import { toObjectId } from '../common/common.service';
@@ -10,15 +10,16 @@ import { toObjectId } from '../common/common.service';
 @Injectable()
 export class CompanyService {
   constructor(
-    @InjectModel(Company.name) private readonly companyModel: Model<Company>,
+    @InjectModel(Company.name)
+    private readonly companyModel: Model<CompanyDocument>,
   ) {}
 
-  create(createCompanyDto: CreateCompanyDto) {
-    return this.companyModel.create(createCompanyDto);
+  create(body: CreateCompanyDto) {
+    return this.companyModel.create(body);
   }
 
   find(body: FindCompanyDto) {
-    const query: QueryFilter<Company> = {};
+    const query: QueryFilter<CompanyDocument> = {};
 
     if (body.byCategory) {
       query.category = body.byCategory;
@@ -40,7 +41,7 @@ export class CompanyService {
       };
     }
 
-    return this.companyModel.find(query).lean();
+    return this.companyModel.find(query, null, { createdAt: -1 }).lean();
   }
 
   findAll() {
@@ -51,8 +52,8 @@ export class CompanyService {
     return this.companyModel.findById(id).lean();
   }
 
-  update(id: string, updateCompanyDto: UpdateCompanyDto) {
-    return this.companyModel.updateOne(toObjectId(id), updateCompanyDto);
+  update(id: string, body: UpdateCompanyDto) {
+    return this.companyModel.findByIdAndUpdate(toObjectId(id), body);
   }
 
   remove(id: string) {
