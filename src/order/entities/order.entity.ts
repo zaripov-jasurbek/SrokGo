@@ -23,28 +23,33 @@ export class Order {
 
   updatedAt: Date;
 
-  @Prop({ type: Types.ObjectId, ref: Package.name })
+  @Prop({ type: Types.ObjectId, ref: Package.name, index: true })
   package: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: Company.name })
+  @Prop({ type: Types.ObjectId, ref: Company.name, index: true })
   company: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'User', index: true })
   user: Types.ObjectId;
 
   @Prop({ type: String })
   description: string;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number, min: 1, required: true })
   count: number;
 
   @Prop({ type: [Number] })
   coordination: [number, number];
 
-  @Prop({ type: String, default: OrderStatus.Pending })
-  status: string;
+  @Prop({
+    type: String,
+    enum: OrderStatus,
+    default: OrderStatus.Pending,
+    index: true,
+  })
+  status: OrderStatus;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number, min: 0, required: true })
   price: number;
 }
 

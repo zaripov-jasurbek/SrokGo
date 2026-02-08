@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { Order } from '../../order/entities/order.entity';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -12,26 +11,23 @@ export class User {
 
   updatedAt: Date;
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, default: '' })
   about?: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, default: '' })
   avatar?: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, unique: true, sparse: true })
   email?: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, unique: true, sparse: true })
   phone?: string;
 
-  @Prop({ type: Number, default: 10 })
+  @Prop({ type: Number, default: 5 })
   rating: number;
-
-  @Prop({ type: [Types.ObjectId], ref: Order.name })
-  orderHistory: Types.ObjectId[];
 
   @Prop({ type: String })
   passwordHash: string;
