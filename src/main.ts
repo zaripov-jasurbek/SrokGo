@@ -9,6 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
+  app.enableShutdownHooks();
 
   const config = app.get(ConfigService<TConfig>);
   const PORT = config.get('PORT');
