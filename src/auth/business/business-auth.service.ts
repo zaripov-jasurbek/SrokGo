@@ -1,12 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, } from '@nestjs/common';
 import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  Company,
-  CompanyDocument,
-} from '../../company/entities/company.entity';
+import { Company, CompanyDocument, } from '../../company/entities/company.entity';
 import { Model } from 'mongoose';
 import { AuthService } from '../auth.service';
+import { toObjectId } from '../../common/common.service';
 
 @Injectable()
 export class BusinessAuthService {
@@ -16,8 +14,11 @@ export class BusinessAuthService {
     private readonly authService: AuthService,
   ) {}
 
-  async register(body: RegisterDto) {
-    const company = await this.companyModel.create(body);
+  async register({ password, ...data }: RegisterDto) {
+    const company = await this.companyModel.create({
+      ...data,
+      passwordHash: await this.authService.generatePasswordHash(password),
+    });
 
     return this.authService.createToken(company._id.toString());
   }
@@ -31,6 +32,14 @@ export class BusinessAuthService {
     return this.authService.createToken(company._id.toString());
   }
 
+  async refreshToken(refreshToken: string) {
+    const payload = await this.authService.parseToken(refreshToken);
+    const company = await this.companyModel.findById(toObjectId(payload.id));
+    if (!company) throw new UnauthorizedException('Not Found');
+
+    return this.authService.createToken(company._id.toString());
+  }
+
   async verify(token: string): Promise<boolean> {
     return !!token;
   }
@@ -40,6 +49,6 @@ export class BusinessAuthService {
   }
 
   async updateMe(id: string, body: UpdateMe) {
-    return this.companyModel.findByIdAndUpdate(id, body).lean();
+    return this.companyModel.findByIdAndUpdate(id, body, { new: true }).lean();
   }
 }

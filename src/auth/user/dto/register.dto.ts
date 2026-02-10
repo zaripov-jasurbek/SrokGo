@@ -1,12 +1,13 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { User } from '../../../user/entities/user.entity';
 
-export class RegisterDto {
-  name: string;
-  about?: string;
-  avatar?: string;
-  email?: string;
-  phone?: string;
-  rating: number;
+export class RegisterDto extends OmitType(User, [
+  '_id',
+  'createdAt',
+  'updatedAt',
+  'passwordHash',
+]) {
+  password: string;
 }
 
 export class LoginDto {

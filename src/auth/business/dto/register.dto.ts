@@ -1,13 +1,13 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { Company } from '../../../company/entities/company.entity';
 
-export class RegisterDto {
-  name: string;
-  photo: string;
-  OpenTime: Date;
-  CloseTime: Date;
-  category: string;
-  rating: number;
-  coordination: [number, number];
+export class RegisterDto extends OmitType(Company, [
+  '_id',
+  'createdAt',
+  'updatedAt',
+  'passwordHash',
+]) {
+  password: string;
 }
 
 export class LoginDto {

@@ -10,16 +10,20 @@ import { CommentModule } from './comment/comment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envSchema, TConfig } from './common/config/schema';
 import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guard/auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       cache: true,
+      isGlobal: true,
       validate: (env) => envSchema.parse(env),
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
+      global: true,
       useFactory: (config: ConfigService<TConfig>) => ({
         secret: config.get('JWT_SECRET'),
         signOptions: { expiresIn: config.get('JWT_EXPIRE') },
@@ -39,6 +43,13 @@ import { JwtModule } from '@nestjs/jwt';
     UserAuthModule,
     OrderModule,
     CommentModule,
+  ],
+
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

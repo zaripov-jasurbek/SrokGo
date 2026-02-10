@@ -1,19 +1,28 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, QueryFilter } from 'mongoose';
 import { AuthService } from '../auth.service';
 import { User, UserDocument } from '../../user/entities/user.entity';
+import { toObjectId } from '../../common/common.service';
 
 @Injectable()
 export class UserAuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<UserDocument>,
     private readonly authService: AuthService,
   ) {}
 
-  async register(body: RegisterDto) {
-    const user = await this.userModel.create(body);
+  async register({ password, ...data }: RegisterDto) {
+    const user = await this.userModel.create({
+      ...data,
+      passwordHash: await this.authService.generatePasswordHash(password),
+    });
 
     return this.authService.createToken(user._id.toString());
   }
@@ -35,8 +44,12 @@ export class UserAuthService {
     return this.authService.createToken(user._id.toString());
   }
 
-  async verify(token: string): Promise<boolean> {
-    return !!token;
+  async refreshToken(refreshToken: string) {
+    const payload = await this.authService.parseToken(refreshToken);
+    const user = await this.userModel.findById(toObjectId(payload.id));
+    if (!user) throw new UnauthorizedException('Not Found');
+
+    return this.authService.createToken(user._id.toString());
   }
 
   async me(id: string) {
@@ -44,10 +57,14 @@ export class UserAuthService {
   }
 
   async updateMe(id: string, body: UpdateMe) {
-    return this.userModel.findByIdAndUpdate(id, body).lean();
+    return this.userModel.findByIdAndUpdate(id, body, { new: true }).lean();
   }
 
   async avatar(id: string, file: Express.Multer.File) {
     // TODO safe file function
+  }
+
+  async verify(token: string): Promise<boolean> {
+    return !!token;
   }
 }

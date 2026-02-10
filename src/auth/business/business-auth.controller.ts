@@ -1,19 +1,66 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { BusinessAuthService } from './business-auth.service';
 import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
+import { type Response } from 'express';
+import { AuthService } from '../auth.service';
+import { Cookie } from '../../decorator/cookie.decorator';
 
 @Controller('auth/business')
 export class BusinessAuthController {
-  constructor(private readonly businessService: BusinessAuthService) {}
+  constructor(
+    private readonly businessService: BusinessAuthService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/register')
-  register(@Body() body: RegisterDto) {
-    return this.businessService.register(body);
+  async register(
+    @Body() body: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refreshToken, accessToken } =
+      await this.businessService.register(body);
+
+    this.authService.setCookieRefreshToken(
+      res,
+      refreshToken,
+      'auth/business/refresh',
+    );
+
+    return { accessToken };
   }
 
   @Post('/login')
-  login(@Body() body: LoginDto) {
-    return this.businessService.login(body);
+  async login(
+    @Body() body: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refreshToken, accessToken } =
+      await this.businessService.login(body);
+
+    this.authService.setCookieRefreshToken(
+      res,
+      refreshToken,
+      'auth/business/refresh',
+    );
+
+    return { accessToken };
+  }
+
+  @Post('/refresh')
+  async refreshToken(
+    @Res({ passthrough: true }) res: Response,
+    @Cookie('refreshToken') refreshCookieToken: string,
+  ) {
+    const { refreshToken, accessToken } =
+      await this.businessService.refreshToken(refreshCookieToken);
+
+    this.authService.setCookieRefreshToken(
+      res,
+      refreshToken,
+      'auth/business/refresh',
+    );
+
+    return { accessToken };
   }
 
   @Get('/me')
