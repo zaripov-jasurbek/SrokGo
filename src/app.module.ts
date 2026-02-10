@@ -7,12 +7,22 @@ import { BusinessAuthModule } from './auth/business/business-auth.module';
 import { UserAuthModule } from './auth/user/user-auth.module';
 import { OrderModule } from './order/order.module';
 import { CommentModule } from './comment/comment.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { envSchema, TConfig } from './common/config/schema';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://root:root@maindb.z1m8tmq.mongodb.net/?appName=mainDB',
-    ),
+    ConfigModule.forRoot({
+      cache: true,
+      validate: env => envSchema.parse(env),
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<TConfig>) => ({
+        uri: config.get('MONGO_URI'),
+      }),
+    }),
     PackageModule,
     CompanyModule,
     UserModule,
