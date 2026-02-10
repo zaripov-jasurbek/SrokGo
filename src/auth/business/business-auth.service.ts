@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException, UnauthorizedException, } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Company, CompanyDocument, } from '../../company/entities/company.entity';
+import {
+  Company,
+  CompanyDocument,
+} from '../../company/entities/company.entity';
 import { Model } from 'mongoose';
 import { AuthService } from '../auth.service';
 import { toObjectId } from '../../common/common.service';
