@@ -9,12 +9,21 @@ import { OrderModule } from './order/order.module';
 import { CommentModule } from './comment/comment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envSchema, TConfig } from './common/config/schema';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       cache: true,
-      validate: env => envSchema.parse(env),
+      validate: (env) => envSchema.parse(env),
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<TConfig>) => ({
+        secret: config.get('JWT_SECRET'),
+        signOptions: { expiresIn: config.get('JWT_EXPIRE') },
+      }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

@@ -1,13 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+
+export interface JWTPayload {
+  id: string;
+}
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly jwtService: JwtService) {}
+
   async createToken(id: string) {
-    return ''; //TODO JWT token
+    return this.jwtService.signAsync<JWTPayload>({ id });
   }
 
   async parseToken(token: string) {
-    return { id: token }; // TODO parse JWT token
+    return this.jwtService.verifyAsync<JWTPayload>(token);
   }
 
   async comparePassword(password: string, hash: string) {
