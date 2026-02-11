@@ -1,37 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { HealthIndicator, HealthIndicatorResult } from '@nestjs/terminus';
 import cookieParser from 'cookie-parser';
+import { Request, Response } from 'express';
+
+type RequestWithCookies = Request & { cookies?: Record<string, string> };
 
 @Injectable()
 export class CookieParserHealthIndicator extends HealthIndicator {
   async isHealthy(key: string): Promise<HealthIndicatorResult> {
     try {
-      // Проверяем наличие модуля cookie-parser
-      const cookieParserModule = require('cookie-parser');
-
-      // Тестируем базовую функциональность
       const testCookie = 'test=health-check';
-      const req = { headers: { cookie: testCookie } };
-      const res = { setHeader: () => {} };
+      const reqMock = {
+        headers: { cookie: testCookie },
+      };
+      const resMock = { setHeader: () => undefined };
 
       const middleware = cookieParser();
 
-      // Имитируем вызов middleware
-      await new Promise((resolve, reject) => {
-        middleware(req as any, res as any, (err: any) => {
-          if (err) reject(err);
-          else resolve(null);
-        });
+      await new Promise<void>((resolve, reject: (reason: Error) => void) => {
+        middleware(
+          reqMock as unknown as Request,
+          resMock as unknown as Response,
+          (err?: unknown) => {
+            if (err instanceof Error) {
+              reject(err);
+              return;
+            }
+
+            resolve();
+          },
+        );
       });
 
-      const isHealthy = req.hasOwnProperty('cookies');
+      const isHealthy =
+        typeof (reqMock as RequestWithCookies).cookies !== 'undefined';
+
       return this.getStatus(key, isHealthy, {
-        version: cookieParserModule.toString ? 'available' : 'unknown',
+        version: 'available',
         tested: true,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       return this.getStatus(key, false, {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         note: 'Cookie parser may not be properly configured',
       });
     }

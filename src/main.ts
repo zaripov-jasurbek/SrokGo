@@ -12,9 +12,9 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   const config = app.get(ConfigService<TConfig>);
-  const PORT = config.get('PORT');
-  const HOST = config.get('HOST');
+  const PORT = config.getOrThrow<number>('PORT');
+  const HOST = config.getOrThrow<string>('HOST');
   await app.listen(PORT, HOST);
   new Logger().log(`Server is running on ${HOST}:${PORT}`);
 }
-bootstrap();
+void bootstrap();

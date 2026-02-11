@@ -19,10 +19,10 @@ export class Company {
   photo: string;
 
   @Prop({ type: Number, required: true })
-  OpenTime: Number;
+  OpenTime: number;
 
   @Prop({ type: Number })
-  CloseTime: Number;
+  CloseTime: number;
 
   @Prop({ type: String, index: true })
   category: string;
