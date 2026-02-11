@@ -5,7 +5,7 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
+import { Connection, ConnectionStates } from 'mongoose';
 
 @Injectable()
 export class MongooseHealthIndicator extends HealthIndicator {
@@ -16,11 +16,10 @@ export class MongooseHealthIndicator extends HealthIndicator {
     super();
   }
 
-  async isHealthy(key: string): Promise<HealthIndicatorResult> {
+  isHealthy(key: string): Promise<HealthIndicatorResult> {
     try {
-      // Проверяем подключение к MongoDB
       const dbState = this.connection.readyState;
-      const isHealthy = dbState === 1; // 1 = connected
+      const isHealthy = dbState === ConnectionStates.connected;
 
       const result = this.getStatus(key, isHealthy, {
         state: this.getStateDescription(dbState),
@@ -28,26 +27,37 @@ export class MongooseHealthIndicator extends HealthIndicator {
       });
 
       if (isHealthy) {
-        return result;
+        return Promise.resolve(result);
       }
 
-      throw new HealthCheckError('Mongoose health check failed', result);
-    } catch (error) {
+      return Promise.reject(
+        new HealthCheckError('Mongoose health check failed', result),
+      );
+    } catch (error: unknown) {
       const result = this.getStatus(key, false, {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
-      throw new HealthCheckError('Mongoose health check failed', result);
+
+      return Promise.reject(
+        new HealthCheckError('Mongoose health check failed', result),
+      );
     }
   }
 
   private getStateDescription(state: number): string {
-    const states = {
-      0: 'disconnected',
-      1: 'connected',
-      2: 'connecting',
-      3: 'disconnecting',
-      99: 'uninitialized',
-    };
-    return states[state] || 'unknown';
+    switch (state as ConnectionStates) {
+      case ConnectionStates.disconnected:
+        return 'disconnected';
+      case ConnectionStates.connected:
+        return 'connected';
+      case ConnectionStates.connecting:
+        return 'connecting';
+      case ConnectionStates.disconnecting:
+        return 'disconnecting';
+      case ConnectionStates.uninitialized:
+        return 'uninitialized';
+      default:
+        return 'unknown';
+    }
   }
 }

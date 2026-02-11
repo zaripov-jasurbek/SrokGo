@@ -12,6 +12,7 @@ import { envSchema, TConfig } from './common/config/schema';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AuthGuard } from './auth/guard/auth.guard';
     UserAuthModule,
     OrderModule,
     CommentModule,
+    HealthModule,
   ],
 
   providers: [
