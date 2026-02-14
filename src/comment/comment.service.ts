@@ -41,9 +41,12 @@ export class CommentService {
   }
 
   async editText(id: string, text: string) {
-    const res = await this.commentModel.updateOne(
-      { _id: toObjectId(id) },
-      { $set: { text } },
+    return await this.commentModel.findByIdAndUpdate(
+      toObjectId(id),
+      {
+        $set: { text },
+      },
+      { new: true },
     );
   }
 
