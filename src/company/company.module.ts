@@ -6,7 +6,9 @@ import { Package, PackageSchema } from '../package/entities/package.entity';
 import { Company, CompanySchema } from './entities/company.entity';
 
 @Module({
-  imports:[ MongooseModule.forFeature([{ name: Company.name, schema: CompanySchema }]),],
+  imports: [
+    MongooseModule.forFeature([{ name: Company.name, schema: CompanySchema }]),
+  ],
   controllers: [CompanyController],
   providers: [CompanyService],
 })
