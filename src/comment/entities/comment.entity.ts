@@ -6,8 +6,6 @@ import { Company } from '../../company/entities/company.entity';
 
 export type CommentDocument = HydratedDocument<Comment>;
 
-// TODO: Company/Package/User reytinglarini comment qoldirganlarga qarab yangilash kerak
-
 @Schema({ timestamps: true, versionKey: false })
 export class Comment {
   _id: Types.ObjectId;
