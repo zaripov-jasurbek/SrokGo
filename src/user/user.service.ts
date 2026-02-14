@@ -8,9 +8,7 @@ import { toObjectId } from '../common/common.service';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
   create(createUserDto: CreateUserDto) {
     return this.userModel.create(createUserDto);

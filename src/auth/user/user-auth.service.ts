@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -28,6 +29,10 @@ export class UserAuthService {
   }
 
   async login(body: LoginDto) {
+    if (!body.email && !body.phone) {
+      throw new BadRequestException('email or phone is required');
+    }
+
     const query: QueryFilter<UserDocument> = {};
 
     if (body.phone) {
@@ -39,13 +44,17 @@ export class UserAuthService {
     const user = await this.userModel.findOne(query);
     if (!user) throw new NotFoundException('Not Found');
 
-    await this.authService.comparePassword(body.password, user.passwordHash);
+    const isPasswordValid = await this.authService.comparePassword(
+      body.password,
+      user.passwordHash,
+    );
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid password');
 
     return this.authService.createToken(user._id.toString());
   }
 
   async refreshToken(refreshToken: string) {
-    const payload = await this.authService.parseToken(refreshToken);
+    const payload = await this.authService.parseRefreshToken(refreshToken);
     const user = await this.userModel.findById(toObjectId(payload.id));
     if (!user) throw new UnauthorizedException('Not Found');
 
@@ -60,7 +69,7 @@ export class UserAuthService {
     return this.userModel.findByIdAndUpdate(id, body, { new: true }).lean();
   }
 
-  async avatar(id: string, file: Express.Multer.File) {
+  async avatar(_id: string, _file: Express.Multer.File) {
     // TODO safe file function
   }
 

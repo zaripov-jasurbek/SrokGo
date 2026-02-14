@@ -18,16 +18,15 @@
 ## Этап 0. Основа и стабильность (1–2 недели)
 
 ### Must-have (P0)
-- [ ] Вынести конфиги в env (`MONGO_URI`, `JWT_SECRET`, `PORT`, `CORS_ORIGINS`).
-- [ ] Подключить `@nestjs/config` и валидацию env через `class-validator`/`joi`.
-- [ ] Перевести auth на полноценный `JWT + bcrypt` flow.
-- [ ] Добавить глобальный `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`, `transform`).
+- [x] Вынести конфиги в env (`MONGO_URI`, `JWT_SECRET`, `PORT`, `CORS_ORIGINS`).
+- [x] Подключить `@nestjs/config` и валидацию env через `class-validator`/`joi`.
+- [x] Перевести auth на полноценный `JWT + bcrypt` flow.
 - [ ] Добавить единый формат ошибок и глобальный exception filter.
 - [ ] Включить базовый rate limit на auth endpoints.
 
 ### Best practices
 - [ ] Разделить `dev/stage/prod` окружения и переменные.
-- [ ] Добавить health endpoints (`/health/live`, `/health/ready`).
+- [x] Добавить health endpoints (`/health/live`, `/health/ready`).
 - [ ] Добавить structured logging (request-id, user-id, latency).
 - [ ] Настроить backup/restore policy для MongoDB.
 

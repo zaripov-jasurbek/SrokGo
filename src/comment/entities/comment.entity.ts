@@ -60,5 +60,4 @@ export class CommentReaction {
   reaction: 'like' | 'dislike';
 }
 
-export const CommentReactionSchema =
-  SchemaFactory.createForClass(CommentReaction);
+export const CommentReactionSchema = SchemaFactory.createForClass(CommentReaction);

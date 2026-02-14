@@ -8,6 +8,7 @@ import {
 } from '@nestjs/terminus';
 import { MongooseHealthIndicator } from './indicators/mongoose.health';
 import { CookieParserHealthIndicator } from './indicators/cookie-parser.health';
+import { Public } from '../decorator/public-api.decorator';
 
 @Controller('health')
 export class HealthController {
@@ -18,6 +19,7 @@ export class HealthController {
   ) {}
 
   @Get('live')
+  @Public()
   @HealthCheck()
   async liveness(): Promise<HealthCheckResult> {
     // Liveness check - проверка, что приложение запущено
@@ -29,6 +31,7 @@ export class HealthController {
   }
 
   @Get('ready')
+  @Public()
   @HealthCheck()
   async readiness(): Promise<HealthCheckResult> {
     // Readiness check - проверка, что приложение готово обслуживать запросы

@@ -9,12 +9,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserAuthService } from './user-auth.service';
-import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
+import { userLoginSchema, userRegisterSchema, userUpdateMeSchema } from './dto/register.dto';
+import type { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { AuthService } from '../auth.service';
 import { Public } from '../../decorator/public-api.decorator';
 import { Cookie } from '../../decorator/cookie.decorator';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 
 @Controller('auth/user')
 export class UserAuthController {
@@ -26,17 +28,12 @@ export class UserAuthController {
   @Public()
   @Post('/register')
   async register(
-    @Body() body: RegisterDto,
+    @Body(new ZodValidationPipe(userRegisterSchema)) body: RegisterDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refreshToken, accessToken } =
-      await this.userAuthService.register(body);
+    const { refreshToken, accessToken } = await this.userAuthService.register(body);
 
-    this.authService.setCookieRefreshToken(
-      res,
-      refreshToken,
-      'auth/user/refresh',
-    );
+    this.authService.setCookieRefreshToken(res, refreshToken, 'auth/user/refresh');
 
     return { accessToken };
   }
@@ -44,21 +41,17 @@ export class UserAuthController {
   @Public()
   @Post('/login')
   async login(
-    @Body() body: LoginDto,
+    @Body(new ZodValidationPipe(userLoginSchema)) body: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refreshToken, accessToken } =
-      await this.userAuthService.login(body);
+    const { refreshToken, accessToken } = await this.userAuthService.login(body);
 
-    this.authService.setCookieRefreshToken(
-      res,
-      refreshToken,
-      'auth/user/refresh',
-    );
+    this.authService.setCookieRefreshToken(res, refreshToken, 'auth/user/refresh');
 
     return { accessToken };
   }
 
+  @Public()
   @Post('/refresh')
   async refreshToken(
     @Res({ passthrough: true }) res: Response,
@@ -67,11 +60,7 @@ export class UserAuthController {
     const { refreshToken, accessToken } =
       await this.userAuthService.refreshToken(refreshCookieToken);
 
-    this.authService.setCookieRefreshToken(
-      res,
-      refreshToken,
-      'auth/user/refresh',
-    );
+    this.authService.setCookieRefreshToken(res, refreshToken, 'auth/user/refresh');
 
     return { accessToken };
   }
@@ -82,10 +71,14 @@ export class UserAuthController {
   }
 
   @Post('/me')
-  updateMe(@Body() body: UpdateMe, @Query('id') id: string) {
+  updateMe(
+    @Body(new ZodValidationPipe(userUpdateMeSchema)) body: UpdateMe,
+    @Query('id') id: string,
+  ) {
     return this.userAuthService.updateMe(id, body);
   }
 
+  @Public()
   @Get('/verify')
   verify(@Query('token') token: string) {
     // TODO: EMAIL CHECK TOKEN

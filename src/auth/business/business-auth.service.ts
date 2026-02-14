@@ -1,14 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginDto, RegisterDto, UpdateMe } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  Company,
-  CompanyDocument,
-} from '../../company/entities/company.entity';
+import { Company, CompanyDocument } from '../../company/entities/company.entity';
 import { Model } from 'mongoose';
 import { AuthService } from '../auth.service';
 import { toObjectId } from '../../common/common.service';
@@ -34,13 +27,17 @@ export class BusinessAuthService {
     const company = await this.companyModel.findOne({ name: body.name });
     if (!company) throw new NotFoundException('Not Found');
 
-    await this.authService.comparePassword(body.password, company.passwordHash);
+    const isPasswordValid = await this.authService.comparePassword(
+      body.password,
+      company.passwordHash,
+    );
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid password');
 
     return this.authService.createToken(company._id.toString());
   }
 
   async refreshToken(refreshToken: string) {
-    const payload = await this.authService.parseToken(refreshToken);
+    const payload = await this.authService.parseRefreshToken(refreshToken);
     const company = await this.companyModel.findById(toObjectId(payload.id));
     if (!company) throw new UnauthorizedException('Not Found');
 

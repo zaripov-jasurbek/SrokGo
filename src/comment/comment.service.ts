@@ -88,10 +88,7 @@ export class CommentService {
       await this.commentModel.updateOne(
         { _id: commentObjectId },
         {
-          $inc:
-            dto.reaction === 'like'
-              ? { likesCount: -1 }
-              : { dislikesCount: -1 },
+          $inc: dto.reaction === 'like' ? { likesCount: -1 } : { dislikesCount: -1 },
         },
       );
 
@@ -100,10 +97,7 @@ export class CommentService {
 
     // replace reaction
     if (existing) {
-      await this.reactionModel.updateOne(
-        { _id: existing._id },
-        { reaction: dto.reaction },
-      );
+      await this.reactionModel.updateOne({ _id: existing._id }, { reaction: dto.reaction });
 
       await this.commentModel.updateOne(
         { _id: commentObjectId },
@@ -128,8 +122,7 @@ export class CommentService {
     await this.commentModel.updateOne(
       { _id: commentObjectId },
       {
-        $inc:
-          dto.reaction === 'like' ? { likesCount: 1 } : { dislikesCount: 1 },
+        $inc: dto.reaction === 'like' ? { likesCount: 1 } : { dislikesCount: 1 },
       },
     );
   }
@@ -149,9 +142,7 @@ export class CommentService {
   }
 
   getChild(parentId: string) {
-    return this.commentModel
-      .find({ parentId: toObjectId(parentId) })
-      .sort({ createdAt: 1 });
+    return this.commentModel.find({ parentId: toObjectId(parentId) }).sort({ createdAt: 1 });
   }
 
   private async recalculateTargetRatings(comment: CommentDocument) {
@@ -184,10 +175,7 @@ export class CommentService {
       { $group: { _id: null, avg: { $avg: '$rating' } } },
     ]);
 
-    await this.companyModel.updateOne(
-      { _id: companyId },
-      { $set: { rating: stats?.avg ?? 0 } },
-    );
+    await this.companyModel.updateOne({ _id: companyId }, { $set: { rating: stats?.avg ?? 0 } });
   }
 
   private async updatePackageRating(packageId: CommentDocument['package']) {
@@ -206,10 +194,7 @@ export class CommentService {
       { $group: { _id: null, avg: { $avg: '$rating' } } },
     ]);
 
-    await this.packageModel.updateOne(
-      { _id: packageId },
-      { $set: { rating: stats?.avg ?? 0 } },
-    );
+    await this.packageModel.updateOne({ _id: packageId }, { $set: { rating: stats?.avg ?? 0 } });
   }
 
   private async updateUserRating(userId: CommentDocument['user']) {
@@ -228,9 +213,6 @@ export class CommentService {
       { $group: { _id: null, avg: { $avg: '$rating' } } },
     ]);
 
-    await this.userModel.updateOne(
-      { _id: userId },
-      { $set: { rating: stats?.avg ?? 0 } },
-    );
+    await this.userModel.updateOne({ _id: userId }, { $set: { rating: stats?.avg ?? 0 } });
   }
 }

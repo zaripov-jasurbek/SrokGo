@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  HealthCheckError,
-  HealthIndicator,
-  HealthIndicatorResult,
-} from '@nestjs/terminus';
+import { HealthCheckError, HealthIndicator, HealthIndicatorResult } from '@nestjs/terminus';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, ConnectionStates } from 'mongoose';
 
@@ -30,17 +26,13 @@ export class MongooseHealthIndicator extends HealthIndicator {
         return Promise.resolve(result);
       }
 
-      return Promise.reject(
-        new HealthCheckError('Mongoose health check failed', result),
-      );
+      return Promise.reject(new HealthCheckError('Mongoose health check failed', result));
     } catch (error: unknown) {
       const result = this.getStatus(key, false, {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
 
-      return Promise.reject(
-        new HealthCheckError('Mongoose health check failed', result),
-      );
+      return Promise.reject(new HealthCheckError('Mongoose health check failed', result));
     }
   }
 

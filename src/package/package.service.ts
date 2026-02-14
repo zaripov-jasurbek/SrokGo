@@ -32,11 +32,7 @@ export class PackageService {
   }
 
   update(id: string, updatePackageDto: UpdatePackageDto) {
-    return this.packageModel.findByIdAndUpdate(
-      toObjectId(id),
-      updatePackageDto,
-      { new: true },
-    );
+    return this.packageModel.findByIdAndUpdate(toObjectId(id), updatePackageDto, { new: true });
   }
 
   remove(id: string) {
@@ -82,11 +78,7 @@ export class PackageService {
   }
 
   toggleActive(id: string, active: boolean) {
-    return this.packageModel.findByIdAndUpdate(
-      toObjectId(id),
-      { active },
-      { new: true },
-    );
+    return this.packageModel.findByIdAndUpdate(toObjectId(id), { active }, { new: true });
   }
 
   updateRating(id: string, rating: number) {

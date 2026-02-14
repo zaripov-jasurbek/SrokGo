@@ -1,18 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import {
-  CreateCommentDto,
-  ReactionDto,
-  UpdateCommentTextDto,
-} from './dto/create-comment.dto';
+import { CreateCommentDto, ReactionDto, UpdateCommentTextDto } from './dto/create-comment.dto';
 
 @Controller('comments')
 export class CommentController {

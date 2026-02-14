@@ -32,8 +32,7 @@ export class CookieParserHealthIndicator extends HealthIndicator {
         );
       });
 
-      const isHealthy =
-        typeof (reqMock as RequestWithCookies).cookies !== 'undefined';
+      const isHealthy = typeof (reqMock as RequestWithCookies).cookies !== 'undefined';
 
       return this.getStatus(key, isHealthy, {
         version: 'available',

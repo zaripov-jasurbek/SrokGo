@@ -30,7 +30,15 @@ export class AuthService {
   }
 
   async parseToken(token: string) {
-    return this.jwtService.verifyAsync<JWTPayload>(token);
+    return this.jwtService.verifyAsync<JWTPayload>(token, {
+      secret: this.config.get('JWT_SECRET'),
+    });
+  }
+
+  async parseRefreshToken(token: string) {
+    return this.jwtService.verifyAsync<JWTPayload>(token, {
+      secret: this.config.get('JWT_SECRET_REFRESH_TOKEN'),
+    });
   }
 
   generatePasswordHash(password: string) {
@@ -40,7 +48,7 @@ export class AuthService {
     return hash(passwordWithSalt, 12);
   }
 
-  async comparePassword(password: string, hash: string) {
+  comparePassword(password: string, hash: string) {
     const passwordWithSalt = password + this.config.get('PASSWORD_SALT');
 
     return compare(passwordWithSalt, hash);
